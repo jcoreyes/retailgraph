@@ -129,16 +129,22 @@ def filter_data(data):
     data = data[(data.antenna_id < 1400) | (data.antenna_id >= 1500)]
     data['antenna_id'] = data['antenna_id']*-1
 
+def algorithm1():
+    """ Use inverse counts as distance"""
+    style, categories = get_graph_style(data, taxon)
+    plt.figure(1)
+    draw_graph_style(style)
+    plt.figure(2)
+    draw_graph_style(categories)
+
+def algorithm2():
+
 
 if __name__ == '__main__':    
     data = pd.read_csv(sys.argv[1])
     taxon = pd.read_csv('taxonomy.csv')
     print "Num Styles: ", len(taxon.style.unique())
     filter_data(data)
-    style, categories = get_graph_style(data, taxon)
-    plt.figure(1)
-    draw_graph_style(style)
-    plt.figure(2)
-    draw_graph_style(categories)
+
 
 
