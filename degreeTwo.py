@@ -39,23 +39,31 @@ def vote(id1, id2, val):
 	else: 
 		a = id2
 		b = id1
-	antenna_map[(a, b)] += 1
+	antenna_map[(a, b)] += val
 
 def voteWeight(a, b):
-
+	# print a
+	# print b
+	return a*b / 100
 
 # Read in and filter data
 data = data[data['count'] > 200]
 byItem = data.groupby(['item_number', 'serial_number']) # , 'antenna_id'])
 for name, group in byItem:
-	if len(group['item_number']) > 0:
-		print name 
-		print group
-		
+	if len(group['item_number']) > 1:
+		# print name 
+		# print group
+		aid = list(group['antenna_id'])
+		counts = list(group['count'])
+		countVals = {}
+
+		for i in range(len(aid)):
+			countVals[aid[i]] = counts[i]
+
 		# for valid pairs (associated with a single item), vote once
 		for pair in list(itools.combinations(list(set(group['antenna_id'])), 2)):
 			a, b = pair
-			vote(a, b, voteWeight(a, b))
+			vote(a, b, voteWeight(countVals[a], countVals[b]))
 
 # add an edge for pairs with a high enough number of votes
 for pair in pairs:
@@ -69,6 +77,8 @@ for pair in pairs:
 	if antenna_map[(a, b)] >= 5:
 		# print 'pair: (%d, %d) with %d connections' % (a, b, antenna_map[(a, b)])
 		G.add_edge(a, b, weight=(1.0 / antenna_map[(a, b)]))
+
+# print G
 
 # Display the network
 pos = nx.graphviz_layout(G)
