@@ -11,9 +11,11 @@ antenna_map = {}
 G = nx.Graph()
 antennas = list(pd.unique(data['antenna_id']))
 
+# Create graph by adding one vertex for each antenna
 for a in antennas: 
 	G.add_node(a)
 
+# create a hash table value for each pair of antennas
 pairs = list(itools.combinations(antennas, 2))
 for pair in pairs:
 	# print pair
@@ -28,7 +30,9 @@ for pair in pairs:
 
 # print antenna_map
 
-def vote(id1, id2):
+# vote takes in two antenna id's and increments the hash table value
+# that is stored for that pair. 
+def vote(id1, id2, val):
 	if id1 < id2:
 		a = id1
 		b = id2
@@ -37,17 +41,23 @@ def vote(id1, id2):
 		b = id1
 	antenna_map[(a, b)] += 1
 
+def voteWeight(a, b):
 
+
+# Read in and filter data
 data = data[data['count'] > 200]
 byItem = data.groupby(['item_number', 'serial_number']) # , 'antenna_id'])
 for name, group in byItem:
 	if len(group['item_number']) > 0:
-		# print name 
-		# print group
+		print name 
+		print group
+		
+		# for valid pairs (associated with a single item), vote once
 		for pair in list(itools.combinations(list(set(group['antenna_id'])), 2)):
 			a, b = pair
-			vote(a, b)
+			vote(a, b, voteWeight(a, b))
 
+# add an edge for pairs with a high enough number of votes
 for pair in pairs:
 	id1, id2 = pair 
 	if id1 < id2:
@@ -60,6 +70,7 @@ for pair in pairs:
 		# print 'pair: (%d, %d) with %d connections' % (a, b, antenna_map[(a, b)])
 		G.add_edge(a, b, weight=(1.0 / antenna_map[(a, b)]))
 
+# Display the network
 pos = nx.graphviz_layout(G)
 
 day = sys.argv[1].split(".")[0][-1]
