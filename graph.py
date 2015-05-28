@@ -74,7 +74,7 @@ def get_graph_style(data, taxon):
     cat_groups = data.drop_duplicates(subset='style').groupby(['category'])
     for category, group in cat_groups:
         styles.append((category, group['style'].tolist()))
-    
+
     categories = {}
     cat_groups = data.drop_duplicates(subset='style').groupby(['category'])
     for category, group in cat_groups:
@@ -116,10 +116,10 @@ def draw_graph_style(graph_data):
     plt.show()
 
 def get_cmap(N):
-    '''Returns a function that maps each index in 0, 1, ... N-1 to a distinct 
+    '''Returns a function that maps each index in 0, 1, ... N-1 to a distinct
     RGB color.'''
     color_norm  = colors.Normalize(vmin=0, vmax=N)
-    scalar_map = cmx.ScalarMappable(norm=color_norm, cmap='hsv') 
+    scalar_map = cmx.ScalarMappable(norm=color_norm, cmap='hsv')
     def map_index_to_rgb_color(index):
         return scalar_map.to_rgba(index)
     return map_index_to_rgb_color
@@ -130,7 +130,7 @@ def filter_data(data):
     data['antenna_id'] = data['antenna_id']*-1
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     data = pd.read_csv(sys.argv[1])
     taxon = pd.read_csv('taxonomy.csv')
     print "Num Styles: ", len(taxon.style.unique())
@@ -140,5 +140,3 @@ if __name__ == '__main__':
     draw_graph_style(style)
     plt.figure(2)
     draw_graph_style(categories)
-
-
