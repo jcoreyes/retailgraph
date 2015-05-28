@@ -44,7 +44,10 @@ def vote(id1, id2, val):
 def voteWeight(a, b):
 	# print a
 	# print b
-	return a*b / 100
+	if abs(a - b) > 200:
+		return abs(a-b)
+	else: 
+		return a
 
 # Read in and filter data
 data = data[data['count'] > 200]
