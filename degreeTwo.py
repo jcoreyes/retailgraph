@@ -6,6 +6,7 @@ import pandas as pd
 import itertools as itools
 import networkx as nx 
 import sys
+import pickle
 data = pd.read_csv(sys.argv[1])
 antenna_map = {}
 G = nx.Graph()
@@ -44,10 +45,12 @@ def vote(id1, id2, val):
 def voteWeight(a, b):
 	# print a
 	# print b
+	return 1
 	if abs(a - b) > 200:
 		return abs(a-b)
 	else: 
 		return a
+	# return a 
 
 # Read in and filter data
 data = data[data['count'] > 300]
@@ -82,13 +85,15 @@ for pair in pairs:
 		G.add_edge(a, b, weight=(1.0 / antenna_map[(a, b)]))
 
 # print G
+pickle.dump(antenna_map, "antenna_map.pickle")
+
 
 # Display the network
 pos = nx.graphviz_layout(G)
 
 day = sys.argv[1].split(".")[0][-1]
 title = "Relative map of antennas using counts > 200 and day %s data" %day
-nx.draw_networkx(G, pos, title=title)
+nx.draw_networkx(G, pos, title=title, node_size=400)
 plt.axis('off')
 plt.title(title)
 plt.show()
