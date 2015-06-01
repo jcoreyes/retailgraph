@@ -50,7 +50,7 @@ def voteWeight(a, b):
 		return a
 
 # Read in and filter data
-data = data[data['count'] > 200]
+data = data[data['count'] > 300]
 byItem = data.groupby(['item_number', 'serial_number']) # , 'antenna_id'])
 for name, group in byItem:
 	if len(group['item_number']) > 1:
@@ -77,7 +77,7 @@ for pair in pairs:
 	else: 
 		a = id2
 		b = id1
-	if antenna_map[(a, b)] >= 5:
+	if antenna_map[(a, b)] >= 200:
 		# print 'pair: (%d, %d) with %d connections' % (a, b, antenna_map[(a, b)])
 		G.add_edge(a, b, weight=(1.0 / antenna_map[(a, b)]))
 
